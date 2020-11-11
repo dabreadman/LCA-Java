@@ -5,35 +5,46 @@ import org.junit.jupiter.api.Test;
 class LCATest {
 	   
 	/**
-	 *     1
-	 *    / \
-	 *   2   5
-	 *  /   / \
-	 * 3   4   6
+	 * Directed downwards
+	 * e.g. 1->2, 5->8, 6->8
+	 * 
+	 *       1
+	 *       |
+	 *       2   
+	 *   /      \
+	 *  3        4
+	 * | | |     |
+	 * 9 7 6     5
+	 *      \    /
+	 *        8
 	 */
 	
 	LCA LCA = new LCA();
 	@Test
 	void testLCA() {
-		TreeNode three = new TreeNode(3,null,null);
-		TreeNode two = new TreeNode(2,three,null);
-		TreeNode four = new TreeNode(4,null,null);
-		TreeNode six = new TreeNode(6,null,null);
-		TreeNode five = new TreeNode(5,four,six);
-		TreeNode root = new TreeNode(1,two,five);
+		TreeNode nine = new TreeNode(9,null);
+		TreeNode eight = new TreeNode(8,null);
+		TreeNode seven = new TreeNode(7,null);
+		TreeNode six = new TreeNode(6,new TreeNode[] {eight});
+		TreeNode five = new TreeNode(5,new TreeNode[] {eight});
+		TreeNode four = new TreeNode(4,new TreeNode[] {five});
+		TreeNode three = new TreeNode(3,new TreeNode[] {six,seven,nine});
+		TreeNode two = new TreeNode(2,new TreeNode[] {three,four});
+		TreeNode one = new TreeNode(1,new TreeNode[] {two});
 		
 		// Test no node
-		assertEquals("test",null, LCA.lowestCommonAncestor(five,three, six));
-		TreeNode imaginary = new TreeNode(-1,null,null);
-	    assertEquals(null, LCA.lowestCommonAncestor(root,imaginary, six));
+		TreeNode imaginary = new TreeNode(-1,null);
+	    assertEquals(null, LCA.lowestCommonAncestor(one,imaginary, six));
 	    
 		// Test available nodes
-        assertEquals(root, LCA.lowestCommonAncestor(root,three, six));
-        assertEquals(five, LCA.lowestCommonAncestor(root,four, six));
+        assertEquals(three, LCA.lowestCommonAncestor(one,six,seven));
+        assertEquals(two, LCA.lowestCommonAncestor(one,five, seven));
+        assertEquals(three, LCA.lowestCommonAncestor(one,eight,nine));
+        assertEquals(two, LCA.lowestCommonAncestor(one,six,five));
         
         // Test node of ancestor
-        assertEquals(root, LCA.lowestCommonAncestor(root,root, six));
-        assertEquals(five, LCA.lowestCommonAncestor(root,five, six));
+        assertEquals(three, LCA.lowestCommonAncestor(one,three,six));
+        assertEquals(four, LCA.lowestCommonAncestor(one,five,four));
         
 	}
 
